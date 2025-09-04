@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from core.db import Base, engine
-from apps.auth.models.user import User, Invite, Session 
+from apps.auth.models.user import User, Invite, UserSession 
 from core.config import settings
 from core.session import SessionLocal
 from apps.auth.api.auth import router 
+from alembic import context
+
+
 
 Base.metadata.create_all(bind=engine)
 

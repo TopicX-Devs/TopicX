@@ -9,4 +9,6 @@ class SuperUserResponse(BaseModel):
     id: int
     role: str = "admin"
     mail: EmailStr
-    token: str
+    token_access: str
+    token_refresh: str
+

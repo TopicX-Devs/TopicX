@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     DEBUG: bool = False
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+    REFRESH_SECRET_KEY: str = "supersecret"
 
     class Config:
         env_file = ".env"

@@ -31,7 +31,7 @@ class Invite(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
-class Session(Base):
+class UserSession(Base):
     __tablename__ = "sessions"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -40,3 +40,5 @@ class Session(Base):
     expires_at = Column(DateTime, nullable=False)
 
     user = relationship("User", backref="sessions")
+
+    revoked = Column(Boolean, default=False , nullable=False)
