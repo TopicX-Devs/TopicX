@@ -1,27 +1,34 @@
-from core.db import engine
+import secrets
+import string
 from apps.auth.models.user import User
 from core.security import hash_password
 from core.session import SessionLocal
 
-# open session with database
 db = SessionLocal()
 
-# check if this admin is exsist really or no 
-exsiting_admin  = db.query(User).filter(User.role == "admin").first()
-if exsiting_admin:
-    print(f"Admin already exists: {existing_admin.email}")
-else:
-    # define the admin account
-    admin_email = "admin@topicx.com"
-    admin_password = "adminTopicX123!"
+def generate_password(length=12):
+    # letters + nums + symbols
+    characters = string.ascii_letters + string.digits + "!@#$%^&*"
+    return ''.join(secrets.choice(characters) for _ in range(length))
 
-    hashed_pwd = hash_password(admin_password)
+# numbers of the admin you wanted 
+num_admins = 3
 
+for i in range(1, num_admins + 1):
+    email = f"admin{i}@topicx.com"
+    password = generate_password()
+
+    existing_admin = db.query(User).filter(User.email == email).first()
+    if existing_admin:
+        print(f"Admin already exists: {existing_admin.email}")
+        continue
+
+    hashed_pwd = hash_password(password)
     admin_user = User(
-        email=admin_email,
+        email=email,
         hashed_password=hashed_pwd,
         role="admin",
-        must_change_password=True
+        must_change_password=True,
     )
 
     db.add(admin_user)
@@ -29,6 +36,7 @@ else:
     db.refresh(admin_user)
 
     print("Admin created successfully!")
-    print("Use the following credentials to login:")
-    print(f"Email: {admin_email}")
-    print(f"Password: {admin_password}")
+    print(f"Email: {email}")
+    print(f"Password: {password}")
+
+db.close()
