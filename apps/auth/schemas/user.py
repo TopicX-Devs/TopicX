@@ -12,3 +12,9 @@ class SuperUserResponse(BaseModel):
     token_access: str
     token_refresh: str
 
+
+class GenerateRequest(BaseModel):
+    role: str
+    count: int
+    
+
