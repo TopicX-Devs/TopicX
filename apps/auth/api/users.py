@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.db import get_db
 import secrets, string
-from apps.auth.schemas.user import GenerateRequest
+from apps.auth.schemas.user import GenerateRequest , ResetPasswordRequest
 from apps.auth.models.user import User
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
+from core.security import hash_password , verify_password
 from core.config import settings
 
 router_users = APIRouter(prefix="/users", tags=["users"])
@@ -45,28 +46,62 @@ def generate_password(length=10):
     return ''.join(secrets.choice(chars) for _ in range(length))
 
 
-# ----- Endpoint -----
 @router_users.post('/generate')
 def generate_users(
     req: GenerateRequest,
     db: Session = Depends(get_db),
-    user = Depends(role_required(["admin"]))  # فقط الأدمن يقدر يستخدمها
+    user = Depends(role_required(["admin", "sub_admin"]))  
 ):
-    if req.role not in ["admin", "sub_admin", "professor", "assistant", "student"]:
-        raise HTTPException(status_code=400, detail="Invalid role")
+    # 1- حدد الصلاحيات حسب مين بيطلب
+    allowed_roles = ["student", "professor", "assistant"]
+    if user["role"] == "admin":
+        allowed_roles = ["admin", "sub_admin", "professor", "assistant", "student"]
 
+    # 2- لو الـ role المطلوب مش مسموح للي بيطلب → Error
+    if req.role not in allowed_roles:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"{user['role']} not allowed to create {req.role}"
+        )
+
+    # 3- تحديد سقف الـ sub_admins = 3
     if req.role == "sub_admin":
         existing_subs = db.query(User).filter(User.role == req.role).count()
         if existing_subs + req.count > 3:
             raise HTTPException(status_code=400, detail="Max 3 sub-admins allowed")
 
+    # 4- إنشاء المستخدمين
     users = []
     for i in range(req.count):
-        email = f"{req.role}_{secrets.token_hex(4)}@TopicX.com"
+        email = f"{req.role}_{secrets.token_hex(4)}@topicx.com"
         password = generate_password()
-        user_obj = User(email=email, hashed_password=password, role=req.role)
+        user_obj = User(
+            email=email,
+            hashed_password=hash_password(password),
+            role=req.role,
+            must_change_password=True  # ✅ أول مرة يدخل لازم يغير الباسورد
+        )
         db.add(user_obj)
         users.append({"email": email, "password": password, "role": req.role})
 
     db.commit()
     return {"generated": users}
+
+# reset password
+@router_users.post("/reset-password")
+def reset_password(
+    req: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+    db_user = db.query(User).filter(User.email == user["email"]).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not verify_password(req.old_password, db_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Old password incorrect")
+
+    db_user.hashed_password = hash_password(req.new_password)
+    db_user.must_change_password = False
+    db.commit()
+    return {"message": "Password updated successfully"}

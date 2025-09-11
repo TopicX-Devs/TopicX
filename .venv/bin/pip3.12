@@ -1,4 +1,4 @@
-#!/home/user/Desktop/TopicX/.venv/bin/python3
+#!/home/kareem/Desktop/TopicX/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

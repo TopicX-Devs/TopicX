@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from core.db import get_db
 from apps.auth.models.user import User , UserSession
-from apps.auth.schemas.user import SuperUserRequest, SuperUserResponse
+from apps.auth.schemas.user import SuperUserRequest, SuperUserResponse 
 from core.security import verify_password, create_access_token , create_refresh_token
 from datetime import datetime, timedelta
 from core.config import settings
-    
+
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # endpoint login with access token generated
@@ -113,3 +114,5 @@ def logout_all(refresh_token: str, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "All sessions revoked, user logged out everywhere."}
+
+
