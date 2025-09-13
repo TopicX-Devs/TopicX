@@ -93,7 +93,7 @@ def generate_users(
     return {"generated": user_response }
 
 # reset password
-@router_users.post("/reset-password")
+@router_users.patch("/reset-password")
 def reset_password(
     req: ResetPasswordRequest,
     db: Session = Depends(get_db),
