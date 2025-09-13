@@ -3,8 +3,11 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto", 
+    bcrypt__rounds=4  # Very fast, acceptable for temp passwords
+)
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 

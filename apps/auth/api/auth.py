@@ -6,7 +6,7 @@ from apps.auth.schemas.user import SuperUserRequest, SuperUserResponse
 from core.security import verify_password, create_access_token , create_refresh_token
 from datetime import datetime, timedelta
 from core.config import settings
-
+from jose import JWTError, jwt
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

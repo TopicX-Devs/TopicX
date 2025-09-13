@@ -9,6 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 from core.security import hash_password , verify_password
 from core.config import settings
 
+
 router_users = APIRouter(prefix="/users", tags=["users"])
 
 # ----- Auth Setup -----
@@ -71,21 +72,25 @@ def generate_users(
             raise HTTPException(status_code=400, detail="Max 3 sub-admins allowed")
 
     # 4- إنشاء المستخدمين
-    users = []
+    user_data = [] # create a unnecessary list for only response
+    user_response = []
     for i in range(req.count):
         email = f"{req.role}_{secrets.token_hex(4)}@topicx.com"
         password = generate_password()
-        user_obj = User(
-            email=email,
-            hashed_password=hash_password(password),
-            role=req.role,
-            must_change_password=True  # ✅ أول مرة يدخل لازم يغير الباسورد
-        )
-        db.add(user_obj)
-        users.append({"email": email, "password": password, "role": req.role})
-
+        
+        user_dict = {
+            'email':email,
+            'hashed_password':hash_password(password),
+            'role':req.role,
+            'must_change_password':True  # ✅ أول مرة يدخل لازم يغير الباسورد
+        }
+        
+        user_data.append(user_dict)
+        user_response.append({"email": email, "password": password , "role" : req.role})
+    
+    db.bulk_insert_mappings(User, user_data)
     db.commit()
-    return {"generated": users}
+    return {"generated": user_response }
 
 # reset password
 @router_users.post("/reset-password")
