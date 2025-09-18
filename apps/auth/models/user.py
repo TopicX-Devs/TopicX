@@ -19,6 +19,8 @@ class User(Base):
 
     inviter = relationship("User", remote_side=[id], backref="invited_users")
 
+    # Relationship
+    profile = relationship("Profile", back_populates="user", uselist=False)
 
 class Invite(Base):
     __tablename__ = "invites"
