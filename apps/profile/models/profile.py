@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from datetime import datetime
 from core.db import Base # assuming you have Base in core/db.py
-
+from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 class Profile(Base):
     __tablename__ = "profiles"

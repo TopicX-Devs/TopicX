@@ -1,6 +1,7 @@
-from sqlalchemy import Column , Intger , String
+from sqlalchemy import Column , Integer , String
 from core.db import Base
 from sqlalchemy.orm import relationship
+from sqlalchemy import func
 
 class Skill(Base):
     __tablename__ = "skills"

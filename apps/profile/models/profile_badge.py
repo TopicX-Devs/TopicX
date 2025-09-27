@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
 from core.db import Base
+from sqlalchemy import func
 
 
 class ProfileBadge(Base):
