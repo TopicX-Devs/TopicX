@@ -4,6 +4,8 @@ from jose import jwt, JWTError
 from core.security import verify_password, create_access_token, create_refresh_token
 from core.config import settings
 from apps.auth.models.user import User, UserSession
+from datetime import datetime, timedelta
+
 
 def authenticate_user(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
@@ -40,3 +42,11 @@ def revoke_all_sessions(db: Session, user_id: int):
         {"revoked": True}
     )
     db.commit()
+
+
+def get_user_count(db: Session) -> int:
+    return db.query(User).count()
+
+def get_active_users_count(db: Session, days: int = 1) -> int:
+    cutoff = datetime.utcnow() - timedelta(days=days)
+    return db.query(User).filter(User.updated_at >= cutoff).count()

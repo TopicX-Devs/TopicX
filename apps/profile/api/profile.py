@@ -5,12 +5,13 @@ import logging
 from datetime import datetime
 
 from core.db import get_db
-from apps.auth.deps import get_current_user  # Based on your project structure
+from apps.auth.deps import get_current_user , role_required # Based on your project structure
 from ..schemas.profile import ProfileCreate, ProfileUpdate, ProfileOut
 from ..crud import profile as crud_profile
 from apps.auth.models.user import User  # From auth app crud
 from apps.profile.models.profile import Profile  # Your profile model
- 
+from apps.auth.crud import auth as crud_user 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -249,16 +250,10 @@ def delete_profile(
 @router_profile.get("/admin/stats")
 def get_platform_statistics(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(role_required(["admin"])) 
 ):
     """Get platform statistics (admin only)"""
     try:
-        if not current_user.is_admin:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Admin access required"
-            )
-        
         stats = {
             "total_users": crud_user.get_user_count(db),
             "total_profiles": crud_profile.get_profile_count(db),

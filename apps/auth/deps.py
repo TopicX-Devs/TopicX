@@ -32,3 +32,19 @@ def role_required(required_roles: list[str]):
             )
         return current_user
     return wrapper
+
+
+def role_required(roles: list):
+    """
+    Dependency to ensure the current user has one of the required roles.
+    Example usage:
+        current_user: User = Depends(role_required(["admin", "moderator"]))
+    """
+    def dependency(current_user: User = Depends(get_current_user)):
+        if not current_user or current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Permission denied"
+            )
+        return current_user
+    return dependency
