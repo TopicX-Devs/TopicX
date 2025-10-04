@@ -5,8 +5,14 @@ from sqlalchemy import pool
 
 from alembic import context
 
+# import my models 
 from core.db import Base  
-from apps.auth.models.user import User, Invite, UserSession 
+from apps.auth.models.user import User, Invite, UserSession
+from apps.profile.models.profile import Profile   
+from apps.profile.models.badge import Badge
+from apps.profile.models.skill import Skill
+from apps.profile.models.profile_badge import ProfileBadge
+from apps.profile.models.profile_skill import ProfileSkill
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

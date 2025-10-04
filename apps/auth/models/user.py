@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from core.db import Base
+from sqlalchemy import func
 
 
 class User(Base):
@@ -19,6 +20,8 @@ class User(Base):
 
     inviter = relationship("User", remote_side=[id], backref="invited_users")
 
+    # Relationship
+    profile = relationship("Profile", back_populates="user", uselist=False)
 
 class Invite(Base):
     __tablename__ = "invites"
