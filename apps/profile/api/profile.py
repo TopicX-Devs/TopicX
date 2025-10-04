@@ -6,17 +6,27 @@ from datetime import datetime
 
 from core.db import get_db
 from apps.auth.deps import get_current_user , role_required # Based on your project structure
-from ..schemas.profile import ProfileCreate, ProfileUpdate, ProfileOut
-from ..crud import profile as crud_profile
+from apps.profile.schemas.profile import ProfileCreate , ProfileUpdate , ProfileOut
+from apps.profile.crud import profile as crud_profile
 from apps.auth.models.user import User  # From auth app crud
 from apps.profile.models.profile import Profile  # Your profile model
 from apps.auth.crud import auth as crud_user 
+
+from apps.profile.api.skill import skill_router as skills_router
+from apps.profile.api.profile_skills import profile_skill_router as profile_skills_router
+from apps.profile.api.profile_badges import profile_badge_router as profile_badges_router
+from apps.profile.api.badges import badge_router as badges_router
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router_profile = APIRouter(prefix="/profiles", tags=["profiles"])
+
+router_profile.include_router(skills_router, prefix="/skills")
+router_profile.include_router(profile_skills_router, prefix="/profile_skills")
+router_profile.include_router(profile_badges_router, prefix="/profile_badges")
+router_profile.include_router(badges_router, prefix="/badges")
 
 # Helper function to log platform statistics
 def log_platform_stats(db: Session, action: str, user_id: int):
