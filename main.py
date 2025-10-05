@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # ✅ CORS middleware to prevent 403 due to missing X-Requested-With
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],       # You can change this to ["http://localhost:3000"] later
+    allow_origins=["https://replit.com/@kareemalaa1/TopicX"],       # You can change this to ["http://localhost:3000"] later
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
