@@ -7,7 +7,16 @@ from apps.auth.api.auth import router
 from apps.profile.api.profile import router_profile
 from apps.auth.api.users import router_users
 from alembic import context
+from fastapi.middleware.cors import CORSMiddleware
 
+# ✅ CORS middleware to prevent 403 due to missing X-Requested-With
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       # You can change this to ["http://localhost:3000"] later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 Base.metadata.create_all(bind=engine)
