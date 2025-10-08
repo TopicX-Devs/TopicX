@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 
 # ----- Login -----
 class SuperUserRequest(BaseModel):
-    mail: EmailStr
+    email: EmailStr
     password: str
 
 class SuperUserResponse(BaseModel):

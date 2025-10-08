@@ -13,7 +13,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=SuperUserResponse)
 def login(request: SuperUserRequest, db: Session = Depends(get_db)):
-    user = crud_auth.authenticate_user(db, request.mail, request.password)
+    user = crud_auth.authenticate_user(db, request.email, request.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 

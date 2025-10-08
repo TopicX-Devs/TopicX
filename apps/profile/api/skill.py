@@ -8,7 +8,7 @@ from apps.profile import crud as profile_crud  # adjust imports to your module l
 from apps.profile.schemas.profile import SkillCreate, SkillOut
 from apps.auth.deps import get_current_user, role_required
 
-skill_router = APIRouter(prefix="/skills", tags=["skills"])
+skill_router = APIRouter(tags=["skills"])
 
 
 @skill_router.post("/", response_model=SkillOut, status_code=status.HTTP_201_CREATED,

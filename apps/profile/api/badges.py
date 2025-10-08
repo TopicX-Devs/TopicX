@@ -6,7 +6,7 @@ from apps.profile.schemas.profile import BadgeCreate, BadgeOut
 from apps.profile.crud import badges as badges_crud
 from apps.auth.deps import role_required
 
-badge_router = APIRouter(prefix="/badges", tags=["badges"])
+badge_router = APIRouter(tags=["badges"])
 
 @badge_router.post("/", response_model=BadgeOut, status_code=status.HTTP_201_CREATED, dependencies=[Depends(role_required("admin"))])
 def create_badge(payload: BadgeCreate, db: Session = Depends(get_db)):

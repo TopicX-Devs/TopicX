@@ -25,8 +25,8 @@ router_profile = APIRouter(prefix="/profiles", tags=["profiles"])
 
 router_profile.include_router(skills_router, prefix="/skills")
 router_profile.include_router(profile_skills_router, prefix="/profile_skills")
-router_profile.include_router(profile_badges_router, prefix="/profile_badges")
 router_profile.include_router(badges_router, prefix="/badges")
+router_profile.include_router(profile_badges_router, prefix="/profile_badges")
 
 # Helper function to log platform statistics
 def log_platform_stats(db: Session, action: str, user_id: int):

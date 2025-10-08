@@ -8,7 +8,7 @@ from apps.profile.schemas.profile import AssignSkills, SkillOut
 from apps.profile import crud as profile_crud
 from apps.auth.deps import get_current_user, role_required
 
-profile_skill_router = APIRouter(prefix="/profiles/{profile_id}/skills", tags=["profile-skills"])
+profile_skill_router = APIRouter(tags=["profile-skills"])
 
 @profile_skill_router.post("/", response_model=List[SkillOut])
 def assign_skills(profile_id: int, payload: AssignSkills, db: Session = Depends(get_db),
